@@ -6,6 +6,12 @@ import { useState } from 'react';
 const YANDEX_METRIKA_ID = 'XXXXXXXX';
 const TARGET_GOAL_NAME = 'cta_button_click';
 
+// ============================================
+// НАСТРОЙКИ TELEGRAM БОТА
+// ============================================
+const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // <-- Токен от @BotFather
+const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';     // <-- Ваш chat_id (узнать у @userinfobot)
+
 function sendMetrikaGoal(goalName: string) {
   if (typeof window !== 'undefined' && (window as any).ym) {
     (window as any).ym(YANDEX_METRIKA_ID, 'reachGoal', goalName);
@@ -15,12 +21,94 @@ function sendMetrikaGoal(goalName: string) {
   }
 }
 
+async function sendToTelegram(email: string): Promise<boolean> {
+  try {
+    // Собираем дополнительную информацию
+    const timestamp = new Date().toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      dateStyle: 'short',
+      timeStyle: 'short'
+    });
+    const userAgent = navigator.userAgent;
+    const referrer = document.referrer || 'Прямой заход';
+    const url = window.location.href;
+    
+    // Определяем устройство
+    let device = 'Десктоп';
+    if (/Mobile|Android|iPhone|iPad/i.test(userAgent)) {
+      device = /iPhone|iPad/i.test(userAgent) ? 'iOS' : 'Android';
+    }
+    
+    // Формируем сообщение
+    const message = `
+🔔 <b>Новая заявка TeenTalk!</b>
+
+📧 <b>Email:</b> <code>${email}</code>
+🕐 <b>Время:</b> ${timestamp}
+📱 <b>Устройство:</b> ${device}
+🔗 <b>Источник:</b> ${referrer}
+🌐 <b>URL:</b> ${url}
+    `.trim();
+
+    const response = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'HTML'
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Ошибка отправки в Telegram');
+    }
+
+    console.log('[Telegram] Заявка успешно отправлена');
+    return true;
+  } catch (error) {
+    console.error('[Telegram] Ошибка отправки:', error);
+    return false;
+  }
+}
+
 function App() {
   const [showModal, setShowModal] = useState(false);
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleCtaClick = () => {
     sendMetrikaGoal(TARGET_GOAL_NAME);
     setShowModal(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    // Отправляем в Telegram
+    const telegramSuccess = await sendToTelegram(email);
+    
+    // Отправляем цель в Метрику
+    sendMetrikaGoal('email_submit');
+
+    if (telegramSuccess) {
+      setSubmitStatus('success');
+      setEmail('');
+      // Закрываем модальное окно через 2 секунды
+      setTimeout(() => {
+        setShowModal(false);
+        setSubmitStatus('idle');
+      }, 2000);
+    } else {
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -498,27 +586,53 @@ function App() {
                 Мы рады, что эта идея вам откликается. Сервис находится в стадии разработки. 
                 Оставьте email, чтобы узнать о запуске первым.
               </p>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  sendMetrikaGoal('email_submit');
-                  setShowModal(false);
-                }}
-                className="space-y-3"
-              >
-                <input
-                  type="email"
-                  placeholder="Ваш email"
-                  required
-                  className="w-full px-4 py-3.5 bg-orange-50/50 border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent placeholder:text-stone-400"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-3.5 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-orange-200/50"
-                >
-                  Уведомить о запуске
-                </button>
-              </form>
+              {submitStatus === 'success' ? (
+                <div className="py-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-stone-800 mb-2">Готово!</h3>
+                  <p className="text-stone-500 text-sm">
+                    Мы уведомим вас о запуске сервиса.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <input
+                    type="email"
+                    placeholder="Ваш email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3.5 bg-orange-50/50 border border-orange-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent placeholder:text-stone-400 disabled:opacity-60"
+                  />
+                  {submitStatus === 'error' && (
+                    <div className="text-rose-600 text-xs px-1">
+                      Не удалось отправить. Попробуйте ещё раз или напишите нам позже.
+                    </div>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white py-3.5 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-orange-200/50 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Отправляем...
+                      </>
+                    ) : (
+                      'Уведомить о запуске'
+                    )}
+                  </button>
+                </form>
+              )}
               <p className="text-stone-400 text-xs mt-4">
                 Нажимая кнопку, вы соглашаетесь на обработку персональных данных
               </p>
