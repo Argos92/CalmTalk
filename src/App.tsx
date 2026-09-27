@@ -41,7 +41,7 @@ async function sendToTelegram(email: string): Promise<boolean> {
     
     // Формируем сообщение
     const message = `
-🔔 <b>Новая заявка TeenTalk!</b>
+🔔 <b>Новая заявка Опора!</b>
 
 📧 <b>Email:</b> <code>${email}</code>
 🕐 <b>Время:</b> ${timestamp}
@@ -124,12 +124,8 @@ function App() {
       <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl z-50 border-b border-orange-100/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-rose-400 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200/50">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold text-stone-800">TeenTalk</span>
+            <img src="/logo_.png" alt="Опора" className="w-9 h-9 object-contain" />
+            <span className="text-xl font-bold text-stone-800">Опора</span>
           </div>
           <button
             onClick={handleCtaClick}
@@ -457,7 +453,7 @@ function App() {
                   <span className="text-white text-sm">💛</span>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-semibold text-stone-700">Философия TeenTalk</div>
+                  <div className="text-sm font-semibold text-stone-700">Философия Опоры</div>
                   <div className="text-xs text-stone-400">Баланс заботы и доверия</div>
                 </div>
               </div>
@@ -527,20 +523,20 @@ function App() {
             <div className="relative z-10">
               <div className="text-5xl mb-5">🤗</div>
               <h2 className="text-3xl sm:text-4xl font-bold text-stone-800 mb-4 tracking-tight">
-                Готовы дать ребёнку поддержку?
+                Начните заботиться о ребёнке уже сегодня
               </h2>
               <p className="text-stone-500 text-lg mb-8 max-w-xl mx-auto">
-                Оставьте заявку, чтобы узнать о запуске сервиса первым. 
-                Мы уведомим вас, когда TeenTalk будет доступен.
+                Оставьте заявку, и мы свяжемся с вами, чтобы подобрать психолога 
+                и рассказать подробнее о том, как работает сервис.
               </p>
               <button
                 onClick={handleCtaClick}
                 className="bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600 text-white px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-orange-200/60 hover:-translate-y-0.5"
               >
-                Заинтересовало — оставить заявку
+                Оставить заявку
               </button>
               <p className="text-stone-400 text-sm mt-4">
-                Это не обязывает вас ни к чему. Мы просто хотим понять спрос.
+                Мы свяжемся с вами в течение рабочего дня
               </p>
             </div>
           </div>
@@ -551,15 +547,11 @@ function App() {
       <footer className="py-8 px-4 sm:px-6 border-t border-orange-100/50">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-orange-400 to-rose-400 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </div>
-            <span className="text-sm font-semibold text-stone-700">TeenTalk</span>
+            <img src="/logo_.png" alt="Опора" className="w-7 h-7 object-contain" />
+            <span className="text-sm font-semibold text-stone-700">Опора</span>
           </div>
           <p className="text-stone-400 text-sm">
-            © 2026 TeenTalk. Психологическая помощь подросткам.
+            © 2026 Опора. Психологическая помощь подросткам.
           </p>
         </div>
       </footer>
@@ -581,10 +573,10 @@ function App() {
               <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-rose-100 rounded-full flex items-center justify-center mx-auto mb-5">
                 <span className="text-3xl">✨</span>
               </div>
-              <h3 className="text-2xl font-bold text-stone-800 mb-2">Спасибо за интерес!</h3>
+              <h3 className="text-2xl font-bold text-stone-800 mb-2">Заявка принята!</h3>
               <p className="text-stone-500 mb-6 text-sm leading-relaxed">
-                Мы рады, что эта идея вам откликается. Сервис находится в стадии разработки. 
-                Оставьте email, чтобы узнать о запуске первым.
+                Оставьте email, и мы свяжемся с вами, чтобы рассказать подробнее 
+                о сервисе и помочь подобрать психолога для вашего ребёнка.
               </p>
               {submitStatus === 'success' ? (
                 <div className="py-4">
@@ -595,7 +587,7 @@ function App() {
                   </div>
                   <h3 className="text-xl font-bold text-stone-800 mb-2">Готово!</h3>
                   <p className="text-stone-500 text-sm">
-                    Мы уведомим вас о запуске сервиса.
+                    Мы свяжемся с вами в ближайшее время.
                   </p>
                 </div>
               ) : (
@@ -628,7 +620,7 @@ function App() {
                         Отправляем...
                       </>
                     ) : (
-                      'Уведомить о запуске'
+                      'Получить консультацию'
                     )}
                   </button>
                 </form>
