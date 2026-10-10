@@ -47,3 +47,43 @@ jobs:
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify public website
+        env:
+          DEPLOYED_PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PYTHON'
+          import os, re, time
+          from urllib.request import Request, urlopen
+          from urllib.parse import urljoin
+
+          def check(url):
+              request = Request(url, headers={'Cache-Control': 'no-cache', 'User-Agent': 'CalmTalk-deployment-check'})
+              with urlopen(request, timeout=30) as response:
+                  html = response.read().decode('utf-8')
+                  print(f'Page: {url} -> {response.url}, HTTP {response.status}', flush=True)
+                  base = response.url
+              scripts = re.findall(r'<script[^>]+src=["\']([^"\']+)', html)
+              local = [src for src in scripts if not src.startswith(('https://', 'http://'))]
+              print(f'Local scripts: {local}', flush=True)
+              if not local or any('/src/' in src or src.endswith('.tsx') for src in local):
+                  raise RuntimeError('Public page serves source files instead of the Vite production build')
+              for src in local:
+                  with urlopen(urljoin(base, src), timeout=30) as asset:
+                      mime = asset.headers.get_content_type()
+                      print(f'Asset: {src}, HTTP {asset.status}, MIME {mime}', flush=True)
+                      if mime not in ('text/javascript', 'application/javascript'):
+                          raise RuntimeError(f'Invalid JavaScript MIME type: {mime}')
+
+          url = os.environ['DEPLOYED_PAGE_URL']
+          for attempt in range(4):
+              try:
+                  check(url)
+                  break
+              except Exception as error:
+                  print(f'Attempt {attempt + 1}: {error}', flush=True)
+                  if attempt == 3:
+                      raise
+                  time.sleep(15)
+          if url.startswith('https://'):
+              check('http://' + url[len('https://'):])
+          PYTHON
