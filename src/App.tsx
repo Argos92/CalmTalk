@@ -34,7 +34,7 @@ function App() {
   };
   return <>
     <header className="header wrap">
-      <a className="brand" href="#" aria-label="Опора — главная"><span className="brand-mark"><Heart size={23} /></span>опора<span className="brand-dot">.</span></a>
+      <a className="brand" href="#" aria-label="Опора — главная"><img className="brand-mark" src="/logo_.png" alt="" />опора<span className="brand-dot">.</span></a>
       <nav aria-label="Основная навигация"><a href="#how">Как это работает</a><a href="#trust">О доверии</a><a href="#faq">Вопросы</a></nav>
       <button className="button small" onClick={open}>Подобрать поддержку <ArrowUpRight size={16}/></button>
     </header>
@@ -68,7 +68,7 @@ function App() {
       <section className="section wrap faq" id="faq"><div><span className="eyebrow">ПРОСТО О ВАЖНОМ</span><h2>Можно<br/><em>спросить.</em></h2><p>Вы доверяете самое дорогое.<br/>Вопросы — естественная часть выбора.</p></div><div>{questions.map(([q,a])=><details key={q}><summary>{q}<Plus size={20}/></summary><p>{a}</p></details>)}</div></section>
       <section className="final-cta wrap"><span className="eyebrow">НАЧНИТЕ С ОДНОГО ШАГА</span><h2>Не все разговоры — с вами.<br/><em>Но поддержка начинается с вас.</em></h2><p>Расскажите, какая помощь нужна вашей семье.<br/>Заполните заявку прямо здесь — без перехода на другую страницу.</p><button className="button" onClick={open}>Подобрать поддержку <ArrowUpRight size={20}/></button><span className="cta-note">Без оплаты на этом шаге</span></section>
     </main>
-    <footer className="wrap footer"><a className="brand" href="#"><span className="brand-mark"><Heart size={23}/></span>опора.</a><span>Больше доверия. Больше пространства быть собой.</span><span>© {new Date().getFullYear()} Опора</span></footer>
+    <footer className="wrap footer"><a className="brand" href="#"><img className="brand-mark" src="/logo_.png" alt="" />опора.</a><span>Больше доверия. Больше пространства быть собой.</span><span>© {new Date().getFullYear()} Опора</span></footer>
 
     <dialog ref={dialog} className="form-dialog" aria-labelledby="form-title" onCancel={close} onClick={event => { if (event.target === event.currentTarget) close(); }}>
       <div className="form-dialog-header"><div><span className="eyebrow">ПЕРВЫЙ ШАГ К ПОДДЕРЖКЕ</span><h2 id="form-title">Заявка для вашей семьи</h2></div><button className="form-close" onClick={close} aria-label="Закрыть форму"><X size={23}/></button></div>
