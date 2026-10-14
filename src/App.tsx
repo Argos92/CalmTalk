@@ -55,13 +55,6 @@ function App() {
         </div>
       </section>
       <div className="principles wrap"><span><Users size={19}/> Выбор вместе с ребёнком</span><span><ShieldCheck size={19}/> Личные границы важны</span><span><MessageCircle size={19}/> Разговор без осуждения</span></div>
-      <section className="section wrap situations"><div className="section-heading"><div><span className="eyebrow">ЗНАКОМО МНОГИМ РОДИТЕЛЯМ</span><h2>«Всё нормально».<br/><em>А вы чувствуете — не всё.</em></h2></div><p>Не каждый разговор легко начать дома.<br/>Иногда нужен другой взрослый, который<br/>поможет разобраться в переживаниях.</p></div>
-        <div className="cards">{[
-          ['01', 'Слишком много напряжения', 'Экзамены, ожидания, страх ошибиться. Когда кажется, что нужно справляться со всем сразу.', 'Тревога и учёба'],
-          ['02', 'Сложно найти своих', 'Ссоры с друзьями, одиночество, отношения. То, о чём бывает неловко рассказывать даже самым близким.', 'Друзья и отношения'],
-          ['03', 'Трудно понять себя', 'Меняются чувства, тело, представления о себе. Хочется быть услышанным, а не получить ещё один совет.', 'Самооценка и взросление'],
-        ].map(([n,title,description,tag])=><article className="situation-card" key={n}><span className="card-number">{n}<ArrowUpRight size={21}/></span><h3>{title}</h3><p>{description}</p><span className="tag">{tag}</span></article>)}</div>
-      </section>
       <section className="section wrap concerns" id="concerns" aria-labelledby="concerns-title">
         <div className="section-heading"><div><span className="eyebrow">С ЧЕМ МОЖНО ОБРАТИТЬСЯ</span><h2 id="concerns-title">Когда ребёнку непросто.<br/><em>И вам хочется помочь.</em></h2></div><p>Не нужно ждать, пока станет совсем тяжело.<br/>Начать разговор можно с того,<br/>что беспокоит уже сейчас.</p></div>
         <div className="concern-grid">{[
